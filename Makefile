@@ -1,3 +1,4 @@
+SHELL := /bin/bash
 mongo:
 	docker run -d --name poet-mongo -p 27017:27017 mongo:3.4
 
@@ -14,17 +15,29 @@ sh-ipfs:
 	docker exec -it poet-ipfs /bin/sh
 
 setup:
-	#nvm use
+	if [ -d ~/.nvm ]; then \
+		. $$NVM_DIR/nvm.sh ; \
+		nvm install; \
+	fi;
 	npm install
 	npm run build
 	npm start
 
 all: mongo rabbit ipfs setup
 
+containers: mongo rabbit ipfs
+
+start-api:
+	npm start
+
+start: containers start-api
+
 stop:
 	docker stop $$(docker ps -a -q)
 
 clean:
-	rm -rf node_modules
+	if [ -d "node_modules" ]; then \
+		rm -rf node_modules ; \
+	fi;
 	docker rm $$(docker ps -a -q)
     
