@@ -39,5 +39,5 @@ clean:
 	if [ -d "node_modules" ]; then \
 		rm -rf node_modules ; \
 	fi;
-	docker rm $$(docker ps -a -q)
+	docker rm $$(docker ps -a -f name=poet-* -q)
     
